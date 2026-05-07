@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Flip Meet",
+  "version": "0.1.0",
+  "description": "Type /meet in a Flip chat to drop in an instant Google Meet link.",
+  "permissions": ["identity"],
+  "host_permissions": [
+    "https://meet.googleapis.com/*",
+    "https://staging.flipnext.de/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://staging.flipnext.de/chats/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "oauth2": {
+    "client_id": "REPLACE_WITH_YOUR_OAUTH_CLIENT_ID.apps.googleusercontent.com",
+    "scopes": ["https://www.googleapis.com/auth/meetings.space.created"]
+  }
+}
