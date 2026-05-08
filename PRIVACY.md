@@ -27,8 +27,11 @@ All of these steps happen entirely within your own browser. The extension does n
 
 ## Permissions we request
 
-- **Host access to `meet.google.com`** — to open the redirect window and read the resulting meeting URL.
+- **Host access to `meet.google.com`** — to open the redirect tab and read the resulting meeting URL.
 - **Host access to `staging.flipnext.de` and `show.flipnext.de`** — to inject the content script that detects `/meet` in chat composers.
+- **Optional host access (`https://*/*`)** — _not granted by default_. The extension exposes an options page where users can add additional hosts (e.g. a new Flip environment) on which `/meet` should activate. Each such addition requires an explicit permission prompt that the user must approve. The extension does nothing with these origins beyond running the same `/meet` detection logic.
+- **`scripting`** — to dynamically register the `/meet` detection script on hosts the user has added via the options page.
+- **`storage`** — reserved for future use; not currently read or written.
 
 ## Contact
 

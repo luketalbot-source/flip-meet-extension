@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Flip Meet — Options</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Flip Meet</h1>
+        <p class="lead">
+          Choose which sites <code>/meet</code> should activate on. The extension
+          watches the chat composer at <code>/chats/*</code> on each allowed site
+          and replaces <code>/meet</code> with a fresh Google Meet link.
+        </p>
+      </header>
+
+      <section>
+        <h2>Default sites</h2>
+        <p class="muted">
+          Built into the extension. Toggle these off via
+          <a href="#" id="open-extensions">chrome://extensions</a>
+          if you need to.
+        </p>
+        <ul id="default-list"></ul>
+      </section>
+
+      <section>
+        <h2>Custom sites</h2>
+        <p class="muted">
+          Add your own. Useful for new Flip environments
+          (e.g. <code>prod.flipnext.de</code>) or any other chat tool that uses
+          a <code>/chats/*</code> URL pattern.
+        </p>
+        <ul id="custom-list"></ul>
+        <form id="add-form">
+          <input
+            type="text"
+            id="new-host"
+            placeholder="prod.flipnext.de"
+            autocomplete="off"
+            required
+          />
+          <button type="submit">Add site</button>
+        </form>
+        <p class="error" id="error" hidden></p>
+        <p class="hint">
+          After adding, refresh any open chat page on that site to activate the
+          extension there.
+        </p>
+      </section>
+    </main>
+    <script src="options.js"></script>
+  </body>
+</html>

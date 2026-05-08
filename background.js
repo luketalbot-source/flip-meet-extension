@@ -97,3 +97,60 @@ function waitForMeetingUrl(tabId, timeoutMs, onUrl) {
     chrome.tabs.onRemoved.addListener(onRemoved);
   });
 }
+
+// ---------------------------------------------------------------------------
+// Dynamic content script registration for user-added optional hosts.
+//
+// Static content scripts (in manifest.json) cover the default Flip sites.
+// When the user adds a custom site via options.html, we register a separate
+// content script for that origin scoped to the /chats/* path.
+// ---------------------------------------------------------------------------
+
+const STATIC_ORIGINS = new Set([
+  "https://meet.google.com/*",
+  "https://staging.flipnext.de/*",
+  "https://show.flipnext.de/*"
+]);
+
+const CUSTOM_SCRIPT_ID = "flip-meet-custom-content";
+
+async function syncCustomContentScripts() {
+  const perms = await chrome.permissions.getAll();
+  const customOrigins = (perms.origins || [])
+    .filter((o) => o.startsWith("https://"))
+    .filter((o) => !STATIC_ORIGINS.has(o));
+
+  // Convert "https://prod.flipnext.de/*" -> "https://prod.flipnext.de/chats/*"
+  const matches = customOrigins.map(
+    (o) => o.replace(/\/\*$/, "") + "/chats/*"
+  );
+
+  // Always unregister first; idempotent.
+  try {
+    await chrome.scripting.unregisterContentScripts({
+      ids: [CUSTOM_SCRIPT_ID]
+    });
+  } catch (_) {
+    // No existing registration; fine.
+  }
+
+  if (matches.length === 0) {
+    console.log("[flip-meet] no custom sites granted; nothing to register");
+    return;
+  }
+
+  await chrome.scripting.registerContentScripts([
+    {
+      id: CUSTOM_SCRIPT_ID,
+      matches,
+      js: ["content.js"],
+      runAt: "document_idle"
+    }
+  ]);
+  console.log("[flip-meet] registered custom content script for:", matches);
+}
+
+chrome.runtime.onInstalled.addListener(syncCustomContentScripts);
+chrome.runtime.onStartup.addListener(syncCustomContentScripts);
+chrome.permissions.onAdded.addListener(syncCustomContentScripts);
+chrome.permissions.onRemoved.addListener(syncCustomContentScripts);
