@@ -1,56 +1,81 @@
 chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
   if (msg?.type !== "create-meet") return;
-  createMeetSpace().then(
+  createMeetViaRedirect().then(
     (uri) => sendResponse({ ok: true, uri }),
     (err) => sendResponse({ ok: false, error: String(err?.message ?? err) })
   );
   return true;
 });
 
-async function createMeetSpace() {
-  const token = await getAuthToken(true);
-  let res = await callMeetApi(token);
-  if (res.status === 401) {
-    await removeCachedToken(token);
-    const fresh = await getAuthToken(true);
-    res = await callMeetApi(fresh);
-  }
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Meet API ${res.status}: ${body.slice(0, 200)}`);
-  }
-  const data = await res.json();
-  if (!data.meetingUri) {
-    throw new Error("Meet API returned no meetingUri");
-  }
-  return data.meetingUri;
-}
+// A real Meet URL looks like https://meet.google.com/abc-defg-hij
+// Three segments of 3–4 lowercase letters separated by dashes.
+const MEETING_URL_RE =
+  /^https:\/\/meet\.google\.com\/([a-z]{3,4}-[a-z]{3,4}-[a-z]{3,4})(?:[/?]|$)/;
 
-function callMeetApi(token) {
-  return fetch("https://meet.googleapis.com/v2/spaces", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json"
-    },
-    body: "{}"
+const TIMEOUT_MS = 15000;
+
+async function createMeetViaRedirect() {
+  // Open a small minimized popup window pointing at meet.google.com/new.
+  // Google redirects the URL to a fresh meeting URL when the user is signed in.
+  const win = await chrome.windows.create({
+    url: "https://meet.google.com/new",
+    focused: false,
+    state: "minimized",
+    type: "popup",
+    width: 400,
+    height: 300
   });
+
+  const tabId = win.tabs?.[0]?.id;
+  if (!tabId) throw new Error("Could not open Meet tab");
+
+  try {
+    return await waitForMeetingUrl(tabId, TIMEOUT_MS);
+  } finally {
+    chrome.windows.remove(win.id).catch(() => {});
+  }
 }
 
-function getAuthToken(interactive) {
+function waitForMeetingUrl(tabId, timeoutMs) {
   return new Promise((resolve, reject) => {
-    chrome.identity.getAuthToken({ interactive }, (token) => {
-      if (chrome.runtime.lastError || !token) {
-        reject(new Error(chrome.runtime.lastError?.message || "no token"));
-      } else {
-        resolve(token);
-      }
-    });
-  });
-}
+    let done = false;
 
-function removeCachedToken(token) {
-  return new Promise((resolve) =>
-    chrome.identity.removeCachedAuthToken({ token }, resolve)
-  );
+    const onUpdated = (updatedTabId, changeInfo, tab) => {
+      if (done || updatedTabId !== tabId) return;
+      const url = changeInfo.url || tab?.url || "";
+      const match = url.match(MEETING_URL_RE);
+      if (match) {
+        done = true;
+        cleanup();
+        resolve(`https://meet.google.com/${match[1]}`);
+      }
+    };
+
+    const onRemoved = (removedTabId) => {
+      if (done || removedTabId !== tabId) return;
+      done = true;
+      cleanup();
+      reject(new Error("Meet tab closed before redirect completed"));
+    };
+
+    const timer = setTimeout(() => {
+      if (done) return;
+      done = true;
+      cleanup();
+      reject(
+        new Error(
+          "Timed out waiting for Meet URL — are you signed in to Google in this browser?"
+        )
+      );
+    }, timeoutMs);
+
+    function cleanup() {
+      chrome.tabs.onUpdated.removeListener(onUpdated);
+      chrome.tabs.onRemoved.removeListener(onRemoved);
+      clearTimeout(timer);
+    }
+
+    chrome.tabs.onUpdated.addListener(onUpdated);
+    chrome.tabs.onRemoved.addListener(onRemoved);
+  });
 }
