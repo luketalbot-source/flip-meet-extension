@@ -15,15 +15,15 @@ const MEETING_URL_RE =
 const TIMEOUT_MS = 15000;
 
 async function createMeetViaRedirect() {
-  // Open a small minimized popup window pointing at meet.google.com/new.
+  // Open a minimized popup window pointing at meet.google.com/new.
   // Google redirects the URL to a fresh meeting URL when the user is signed in.
+  // Note: Chrome rejects width/height when state is "minimized" — they're
+  // mutually exclusive, so we omit dimensions here.
   const win = await chrome.windows.create({
     url: "https://meet.google.com/new",
     focused: false,
     state: "minimized",
-    type: "popup",
-    width: 400,
-    height: 300
+    type: "popup"
   });
 
   const tabId = win.tabs?.[0]?.id;
