@@ -5,14 +5,18 @@
   "description": "Type /meet in a Flip chat to drop in an instant Google Meet link.",
   "host_permissions": [
     "https://meet.google.com/*",
-    "https://staging.flipnext.de/*"
+    "https://staging.flipnext.de/*",
+    "https://show.flipnext.de/*"
   ],
   "background": {
     "service_worker": "background.js"
   },
   "content_scripts": [
     {
-      "matches": ["https://staging.flipnext.de/chats/*"],
+      "matches": [
+        "https://staging.flipnext.de/chats/*",
+        "https://show.flipnext.de/chats/*"
+      ],
       "js": ["content.js"],
       "run_at": "document_idle"
     }
