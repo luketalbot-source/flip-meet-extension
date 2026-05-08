@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Flip Meet",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Type /meet in a Flip chat to drop in an instant Google Meet link.",
   "icons": {
     "16": "icons/icon-16.png",
