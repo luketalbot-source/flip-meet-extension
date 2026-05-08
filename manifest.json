@@ -1,8 +1,13 @@
 {
   "manifest_version": 3,
   "name": "Flip Meet",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "Type /meet in a Flip chat to drop in an instant Google Meet link.",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
   "host_permissions": [
     "https://meet.google.com/*",
     "https://staging.flipnext.de/*",
