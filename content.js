@@ -236,7 +236,8 @@
 
   let modalHost = null;
   let shadow = null;
-  let escHandler = null;
+  let keyHandler = null;
+  const KEY_EVENTS = ["keydown", "keyup", "keypress"];
 
   const MODAL_CSS = `
     :host { all: initial; }
@@ -329,9 +330,10 @@
   }
 
   function closeModal() {
-    if (escHandler) {
-      window.removeEventListener("keydown", escHandler, true);
-      escHandler = null;
+    if (keyHandler) {
+      for (const t of KEY_EVENTS)
+        window.removeEventListener(t, keyHandler, true);
+      keyHandler = null;
     }
     if (shadow) {
       const existing = shadow.querySelector(".overlay");
@@ -376,18 +378,15 @@
       if (ev.target === overlay) closeModal();
     });
 
-    // Isolate the modal from the host page. The host (Flip) registers global
-    // keyboard shortcuts on document — and our inputs live in a Shadow DOM
-    // whose events are *composed*, so a keystroke like "c" or "n" typed into
-    // a modal field would bubble out and trigger Flip's shortcuts behind the
-    // overlay. Swallow modal-originated events in the bubble phase so they
-    // never reach the host's document/window listeners. This runs after the
-    // event has already been handled by our own inputs (target phase) and
-    // after the window-capture Escape/Tab handler, so typing, Escape and the
-    // focus trap all still work.
+    // Belt-and-braces for non-keyboard events: swallow modal-originated
+    // pointer/mouse and input events in the bubble phase so the host page
+    // can't react to them. Keyboard events are handled separately in the
+    // capture phase below (the host registers shortcuts in capture, which a
+    // bubble swallow can't reach). We do NOT swallow "input"/"beforeinput"
+    // here at capture because our own field listeners need them.
     const swallow = (ev) => ev.stopPropagation();
     [
-      "keydown", "keyup", "keypress", "beforeinput", "input",
+      "beforeinput", "input",
       "click", "dblclick", "mousedown", "mouseup",
       "pointerdown", "pointerup"
     ].forEach((type) => overlay.addEventListener(type, swallow));
@@ -400,9 +399,23 @@
       );
     }
 
-    escHandler = (ev) => {
+    // Capture-phase key handler on window. The host page (Flip) registers
+    // global single-key shortcuts (e.g. "n" opens "new message"), and because
+    // our inputs live in a Shadow DOM the host's "is an input focused?" guard
+    // is defeated by event retargeting — so those shortcuts fire on modal
+    // keystrokes. We must intercept in the CAPTURE phase (window is first in
+    // the path) to beat a host listener on document/window, and call ONLY
+    // stopPropagation — never preventDefault — so the character still types
+    // into our field and the field's own "input" listeners still fire.
+    keyHandler = (ev) => {
+      if (typeof ev.composedPath === "function" &&
+          !ev.composedPath().includes(modalHost)) {
+        return; // not our event; leave the host page alone
+      }
+      ev.stopPropagation();
+      if (ev.type !== "keydown") return;
+
       if (ev.key === "Escape") {
-        ev.stopPropagation();
         closeModal();
         return;
       }
@@ -430,7 +443,7 @@
         }
       }
     };
-    window.addEventListener("keydown", escHandler, true);
+    for (const t of KEY_EVENTS) window.addEventListener(t, keyHandler, true);
 
     shadow.appendChild(overlay);
     build(body, closeModal);
