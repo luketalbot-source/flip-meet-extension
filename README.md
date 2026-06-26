@@ -1,8 +1,21 @@
 # Flip Meet
 
-Chrome extension. Type `/meet` in a chat composer; it gets replaced with a fresh Google Meet link. Press Enter to send.
+Chrome extension. Slash commands for chat composers — type a command and it either rewrites your text or opens a small helper window.
 
 Ships pre-configured for `staging.flipnext.de` and `show.flipnext.de`. Other sites can be added via the options page.
+
+## Commands
+
+| Command | What it does |
+|---------|--------------|
+| `/meet` | Inserts a fresh Google Meet link (opens meet.google.com/new in the background, grabs the URL). |
+| `/help` | Opens a window listing every command. |
+| `/time` | Opens a window to convert a time (e.g. `3pm`, `9am ET`) across team timezones, then inserts the line. |
+| `/poll` | Opens a window to build an emoji-reaction poll, then inserts it. |
+| `/consent` | Demo recording-consent dialog (US / Wiretap Act). Not wired to anything — a UI mock. |
+| `/shrug` | Inserts `¯\_(ツ)_/¯`. Also `/tableflip`, `/unflip`, `/lenny`, `/disapprove`. |
+
+Commands fire when they're the trailing token of the composer text. `/meet` and the macros rewrite inline; `/help`, `/time`, `/poll`, `/consent` open a Shadow-DOM modal so the host page can't restyle them. Nothing auto-sends — you always press Enter yourself.
 
 ## Setup
 
@@ -43,13 +56,18 @@ The extension does **not** auto-send the message — that's deliberate, in case 
 ## Files
 
 ```
-manifest.json   Permissions, host matches, content script registration
-background.js   Service worker: Meet redirect handler + dynamic content scripts
-content.js      Detects /meet in the composer and rewrites it
-options.html    Settings page UI
-options.css     Settings page styling
-options.js      Settings page logic (add/remove host permissions)
+manifest.json       Permissions, host matches, content script registration
+background.js       Service worker: Meet redirect handler + dynamic content scripts
+content.js          Slash-command framework: detection, dispatch, modals, commands
+options.html        Settings page UI
+options.css         Settings page styling
+options.js          Settings page logic (add/remove host permissions)
+test/logic.test.js  Node unit tests for the pure logic (detection, time math, polls)
 ```
+
+Run the logic tests with `node test/logic.test.js`. They stub the one browser
+global `content.js` touches at load and exercise the pure helpers (detection,
+timezone conversion, poll building) — no browser required.
 
 ## Trade-offs vs. the Meet API approach
 
