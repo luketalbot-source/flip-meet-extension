@@ -376,6 +376,22 @@
       if (ev.target === overlay) closeModal();
     });
 
+    // Isolate the modal from the host page. The host (Flip) registers global
+    // keyboard shortcuts on document — and our inputs live in a Shadow DOM
+    // whose events are *composed*, so a keystroke like "c" or "n" typed into
+    // a modal field would bubble out and trigger Flip's shortcuts behind the
+    // overlay. Swallow modal-originated events in the bubble phase so they
+    // never reach the host's document/window listeners. This runs after the
+    // event has already been handled by our own inputs (target phase) and
+    // after the window-capture Escape/Tab handler, so typing, Escape and the
+    // focus trap all still work.
+    const swallow = (ev) => ev.stopPropagation();
+    [
+      "keydown", "keyup", "keypress", "beforeinput", "input",
+      "click", "dblclick", "mousedown", "mouseup",
+      "pointerdown", "pointerup"
+    ].forEach((type) => overlay.addEventListener(type, swallow));
+
     function focusables() {
       return Array.from(
         dialog.querySelectorAll(
