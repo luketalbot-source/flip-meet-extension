@@ -91,15 +91,19 @@
 
   // /flip — Flip logo ASCII art (figlet "slant" — echoes the italic logo).
   // Line-art glyphs (/ \ _ .) render solid in Flip's font, unlike █ which
-  // shows gaps. Each line is indented 4 spaces: markdown renders an indented
-  // block as monospace WITHOUT the visible ``` fence markers.
+  // shows gaps. The ``` fence is required: it's the only thing that makes
+  // Flip render the message monospace (4-space-indented blocks are NOT
+  // honoured — tested). The fence markers show only in the composer draft;
+  // the sent message renders as a clean monospace block.
   const FLIP_ART = [
-    "        _________     ",
-    "       / ____/ (_)___ ",
-    "      / /_  / / / __ \\",
-    "     / __/ / / / /_/ /",
-    "    /_/   /_/_/ .___/ ",
-    "             /_/      "
+    "```",
+    "    _________     ",
+    "   / ____/ (_)___ ",
+    "  / /_  / / / __ \\",
+    " / __/ / / / /_/ /",
+    "/_/   /_/_/ .___/ ",
+    "         /_/      ",
+    "```"
   ].join("\n");
 
   // Standalone commands: must be the entire trimmed composer text (an
