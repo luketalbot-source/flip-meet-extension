@@ -89,17 +89,18 @@
     disapprove: "ಠ_ಠ"
   };
 
-  // /flip — Flip logo ASCII art (double-slash mark + block wordmark).
-  // Wrapped in a code fence so markdown-aware chats render it monospace,
-  // which is what keeps the columns aligned.
+  // /flip — Flip logo ASCII art. Line-art (│ ─ / \ _) rather than solid
+  // blocks: Flip's monospace font renders █ with gaps, shattering block
+  // letters. Line-art uses ordinary glyphs that render cleanly. Wrapped in a
+  // code fence so the chat renders it monospace (keeps columns aligned).
   const FLIP_ART = [
     "```",
-    "    ╱╱  ███████╗██╗     ██╗██████╗ ",
-    "   ╱╱   ██╔════╝██║     ██║██╔══██╗",
-    "  ╱╱    █████╗  ██║     ██║██████╔╝",
-    " ╱╱     ██╔══╝  ██║     ██║██╔═══╝ ",
-    " ╱╱     ██║     ███████╗██║██║     ",
-    "╱╱      ╚═╝     ╚══════╝╚═╝╚═╝     ",
+    "  //    _____ _ _       ",
+    " //    |  ___| (_)_ __  ",
+    "//     | |_  | | | '_ \\ ",
+    "       |  _| | | | |_) |",
+    "       |_|   |_|_| .__/ ",
+    "                 |_|    ",
     "```"
   ].join("\n");
 
