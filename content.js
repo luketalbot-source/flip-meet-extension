@@ -89,20 +89,19 @@
     disapprove: "ಠ_ಠ"
   };
 
-  // /flip — bold "FLIP" wordmark in solid full-block glyphs, no icon.
-  // Pure █ (no thin shadow chars) so the letters read as clean solid blocks.
-  // The ``` fence is required: it's the only thing that makes Flip render the
-  // message monospace (4-space-indented blocks are NOT honoured — tested).
-  // Fence markers show only in the composer draft; the sent message renders
-  // as a clean monospace block.
+  // /flip — bold "FLIP" wordmark, ANSI Shadow style (confirmed to render
+  // cleanly in Flip's chat). The ``` fence is required — it's the only thing
+  // that makes Flip render the message monospace (4-space indent is NOT
+  // honoured). Fence markers show only in the composer draft; the sent
+  // message renders as a clean monospace block.
   const FLIP_ART = [
     "```",
-    "██████ ██     ██████ ██████",
-    "██     ██       ██   ██  ██",
-    "█████  ██       ██   ██████",
-    "██     ██       ██   ██    ",
-    "██     ██       ██   ██    ",
-    "██████ ██████ ██████ ██    ",
+    "███████╗██╗     ██╗██████╗ ",
+    "██╔════╝██║     ██║██╔══██╗",
+    "█████╗  ██║     ██║██████╔╝",
+    "██╔══╝  ██║     ██║██╔═══╝ ",
+    "██║     ███████╗██║██║     ",
+    "╚═╝     ╚══════╝╚═╝╚═╝     ",
     "```"
   ].join("\n");
 
