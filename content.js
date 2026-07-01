@@ -819,5 +819,12 @@
     module.exports = { detect, parseTimeArg, buildTimeLine, buildPollText, MACROS };
   }
 
-  console.log("flip-meet content script loaded (v1.2.0)");
+  try {
+    console.log(
+      "flip-meet content script loaded — v" +
+        chrome.runtime.getManifest().version
+    );
+  } catch (_) {
+    console.log("flip-meet content script loaded");
+  }
 })();
