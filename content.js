@@ -89,19 +89,18 @@
     disapprove: "ಠ_ಠ"
   };
 
-  // /flip — bold "FLIP" wordmark, ANSI Shadow style (confirmed to render
-  // cleanly in Flip's chat). The ``` fence is required — it's the only thing
-  // that makes Flip render the message monospace (4-space indent is NOT
-  // honoured). Fence markers show only in the composer draft; the sent
-  // message renders as a clean monospace block.
+  // /flip — bold "FLIP" wordmark, ANSI Shadow style, in a ``` fence.
+  // Spaces are replaced with "." because Flip's composer collapses runs of
+  // real spaces (contenteditable whitespace behaviour), which knocks the
+  // columns out of alignment. Dots don't collapse, so they hold the layout.
   const FLIP_ART = [
     "```",
-    "███████╗██╗     ██╗██████╗ ",
-    "██╔════╝██║     ██║██╔══██╗",
-    "█████╗  ██║     ██║██████╔╝",
-    "██╔══╝  ██║     ██║██╔═══╝ ",
-    "██║     ███████╗██║██║     ",
-    "╚═╝     ╚══════╝╚═╝╚═╝     ",
+    "███████╗██╗.....██╗██████╗",
+    "██╔════╝██║.....██║██╔══██╗",
+    "█████╗..██║.....██║██████╔╝",
+    "██╔══╝..██║.....██║██╔═══╝",
+    "██║.....███████╗██║██║",
+    "╚═╝.....╚══════╝╚═╝╚═╝",
     "```"
   ].join("\n");
 
