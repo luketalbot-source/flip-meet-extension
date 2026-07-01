@@ -89,20 +89,20 @@
     disapprove: "ಠ_ಠ"
   };
 
-  // /flip — Flip logo ASCII art (figlet "slant" — echoes the italic logo).
-  // Line-art glyphs (/ \ _ .) render solid in Flip's font, unlike █ which
-  // shows gaps. The ``` fence is required: it's the only thing that makes
-  // Flip render the message monospace (4-space-indented blocks are NOT
-  // honoured — tested). The fence markers show only in the composer draft;
-  // the sent message renders as a clean monospace block.
+  // /flip — bold "FLIP" wordmark in solid full-block glyphs, no icon.
+  // Pure █ (no thin shadow chars) so the letters read as clean solid blocks.
+  // The ``` fence is required: it's the only thing that makes Flip render the
+  // message monospace (4-space-indented blocks are NOT honoured — tested).
+  // Fence markers show only in the composer draft; the sent message renders
+  // as a clean monospace block.
   const FLIP_ART = [
     "```",
-    "    _________     ",
-    "   / ____/ (_)___ ",
-    "  / /_  / / / __ \\",
-    " / __/ / / / /_/ /",
-    "/_/   /_/_/ .___/ ",
-    "         /_/      ",
+    "██████ ██     ██████ ██████",
+    "██     ██       ██   ██  ██",
+    "█████  ██       ██   ██████",
+    "██     ██       ██   ██    ",
+    "██     ██       ██   ██    ",
+    "██████ ██████ ██████ ██    ",
     "```"
   ].join("\n");
 
