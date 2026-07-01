@@ -14,6 +14,7 @@ Ships pre-configured for `staging.flipnext.de` and `show.flipnext.de`. Other sit
 | `/poll` | Opens a window to build an emoji-reaction poll, then inserts it. |
 | `/consent` | Demo recording-consent dialog (US / Wiretap Act). Not wired to anything — a UI mock. |
 | `/shrug` | Inserts `¯\_(ツ)_/¯`. Also `/tableflip`, `/unflip`, `/lenny`, `/disapprove`. |
+| `/flip` | Inserts Flip-logo ASCII art (wrapped in a code fence so it renders monospace). |
 
 Commands fire when they're the trailing token of the composer text. `/meet` and the macros rewrite inline; `/help`, `/time`, `/poll`, `/consent` open a Shadow-DOM modal so the host page can't restyle them. Nothing auto-sends — you always press Enter yourself.
 

@@ -89,6 +89,20 @@
     disapprove: "ಠ_ಠ"
   };
 
+  // /flip — Flip logo ASCII art (double-slash mark + block wordmark).
+  // Wrapped in a code fence so markdown-aware chats render it monospace,
+  // which is what keeps the columns aligned.
+  const FLIP_ART = [
+    "```",
+    "    ╱╱  ███████╗██╗     ██╗██████╗ ",
+    "   ╱╱   ██╔════╝██║     ██║██╔══██╗",
+    "  ╱╱    █████╗  ██║     ██║██████╔╝",
+    " ╱╱     ██╔══╝  ██║     ██║██╔═══╝ ",
+    " ╱╱     ██║     ███████╗██║██║     ",
+    "╱╱      ╚═╝     ╚══════╝╚═╝╚═╝     ",
+    "```"
+  ].join("\n");
+
   // Standalone commands: must be the entire trimmed composer text (an
   // optional trailing argument is captured for the paste case).
   const STANDALONE = [
@@ -96,7 +110,8 @@
     { name: "help", re: /^\/help$/ },
     { name: "consent", re: /^\/consent$/ },
     { name: "time", re: /^\/time(?:\s+([\s\S]+))?$/ },
-    { name: "poll", re: /^\/poll(?:\s+([\s\S]+))?$/ }
+    { name: "poll", re: /^\/poll(?:\s+([\s\S]+))?$/ },
+    { name: "flip", re: /^\/flip$/ }
   ];
 
   // Drives the /help modal. Keep usage strings human-friendly.
@@ -115,7 +130,8 @@
     {
       usage: "/shrug",
       desc: "Insert ¯\\_(ツ)_/¯  ·  also /tableflip /unflip /lenny /disapprove"
-    }
+    },
+    { usage: "/flip", desc: "Insert Flip logo ASCII art" }
   ];
 
   // -------------------------------------------------------------------------
@@ -180,6 +196,8 @@
       case "poll":
         clearComposer(el);
         return openPoll(el, hit.arg);
+      case "flip":
+        return writeText(el, FLIP_ART);
     }
   }
 

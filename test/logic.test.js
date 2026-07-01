@@ -47,6 +47,7 @@ eq(detect("/consent"), { kind: "standalone", name: "consent", arg: "" }, "/conse
 eq(detect("/time"), { kind: "standalone", name: "time", arg: "" }, "/time bare");
 eq(detect("/time 3pm"), { kind: "standalone", name: "time", arg: "3pm" }, "/time with arg (paste case)");
 eq(detect("/poll Lunch?"), { kind: "standalone", name: "poll", arg: "Lunch?" }, "/poll with arg");
+eq(detect("/flip"), { kind: "standalone", name: "flip", arg: "" }, "/flip");
 
 // macros (trailing)
 eq(detect("/shrug"), { kind: "macro", name: "shrug", prefix: "" }, "/shrug bare");
