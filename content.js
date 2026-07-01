@@ -89,19 +89,17 @@
     disapprove: "ಠ_ಠ"
   };
 
-  // /flip — Flip logo ASCII art. Line-art (│ ─ / \ _) rather than solid
-  // blocks: Flip's monospace font renders █ with gaps, shattering block
-  // letters. Line-art uses ordinary glyphs that render cleanly. Wrapped in a
-  // code fence so the chat renders it monospace (keeps columns aligned).
+  // /flip — Flip logo ASCII art (figlet "slant" — echoes the italic logo).
+  // Line-art glyphs (/ \ _ .) render solid in Flip's font, unlike █ which
+  // shows gaps. Each line is indented 4 spaces: markdown renders an indented
+  // block as monospace WITHOUT the visible ``` fence markers.
   const FLIP_ART = [
-    "```",
-    "  //    _____ _ _       ",
-    " //    |  ___| (_)_ __  ",
-    "//     | |_  | | | '_ \\ ",
-    "       |  _| | | | |_) |",
-    "       |_|   |_|_| .__/ ",
-    "                 |_|    ",
-    "```"
+    "        _________     ",
+    "       / ____/ (_)___ ",
+    "      / /_  / / / __ \\",
+    "     / __/ / / / /_/ /",
+    "    /_/   /_/_/ .___/ ",
+    "             /_/      "
   ].join("\n");
 
   // Standalone commands: must be the entire trimmed composer text (an
